@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
 import requests
 
@@ -88,6 +87,24 @@ def display_seasonal_profiles(df, city):
             font=dict(size=14)) 
     st.plotly_chart(fig)
 
+def compare_cities(df, cities):
+    fig = go.Figure()
+    for city in cities:
+        city_data = df[df['city'] == city]
+        fig.add_trace(go.Scatter(x=city_data['timestamp'], y=city_data['temperature'], mode='markers', name=city))
+
+    fig.update_layout(
+        title={
+            'text': 'Сравнение температур между городами',
+            'x': 0.2,  
+            'font': dict(size=24)  
+        },
+        xaxis_title='Дата',
+        yaxis_title='Температура (°C)',
+        font=dict(size=14)  
+    )
+    st.plotly_chart(fig)   
+
 st.title("Анализ температурных данных")
 
 uploaded_file = st.file_uploader("Загрузите файл с историческими данными", type=["csv"])
@@ -110,3 +127,7 @@ if uploaded_file is not None:
     display_statistics(df, selected_city)
     display_time_series(df, selected_city)
     display_seasonal_profiles(df, selected_city)
+
+    compare_cities_list = st.multiselect("Выберите города для сравнения", cities, default=cities[:2])
+    if compare_cities_list:
+        compare_cities(df, compare_cities_list)
