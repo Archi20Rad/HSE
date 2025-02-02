@@ -1,7 +1,0 @@
-aiogram
-aiohttp
-pydantic
-pydantic-settings
-python-dotenv
-logging
-requests
